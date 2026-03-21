@@ -125,6 +125,13 @@ try {
 
     $pdo->exec($sql);
 
+    // Patch for existing tables that still use 'email' instead of 'username'
+    try {
+        $pdo->exec("ALTER TABLE users CHANGE email username VARCHAR(255) NOT NULL UNIQUE");
+    } catch (PDOException $e) {
+        // Ignore if 'email' doesn't exist or 'username' already exists
+    }
+
     // 3. Create Admin User
     $passHash = password_hash($adminPass, PASSWORD_DEFAULT);
     $stmt = $pdo->prepare("INSERT INTO users (username, password_hash) VALUES (:username, :pass) ON DUPLICATE KEY UPDATE password_hash = :pass");
