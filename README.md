@@ -4,6 +4,9 @@
 
 A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL**. Manage clients, products, and invoices with a beautiful, dark-themed interface.
 
+<img width="1841" height="931" alt="image" src="https://kamrul.net/assets/images/img_69b52dea28d42.webp" />
+
+
 ## 🚀 Features
 
 -   **Dashboard**: Real-time overview of business performance.
