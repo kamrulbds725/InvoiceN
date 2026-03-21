@@ -1,0 +1,26 @@
+# System Files
+.DS_Store
+Thumbs.db
+node_modules/
+*.zip
+
+# Environment & Config
+.env
+config.php
+
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build/Temp
+dist/
+vendor/
+
+# Runtime / Cache
+
+# Uploads - keep folder, ignore contents
+uploads/*
+!uploads/.gitkeep

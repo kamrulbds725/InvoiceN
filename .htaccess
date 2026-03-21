@@ -1,0 +1,32 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Prevent directory listing
+    Options -Indexes
+
+    # Protect sensitive files
+    <FilesMatch "^\.">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    
+    <FilesMatch "(config\.php|composer\.json|composer\.lock|README\.md)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+
+    # Route API requests to router.php
+    RewriteRule ^api/(.*)$ api/router.php [L,QSA]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "no-referrer-when-downgrade"
+</IfModule>
