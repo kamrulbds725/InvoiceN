@@ -198,9 +198,8 @@
                     window.location.href = '../';
                 } else {
                     if (result.manual_config) {
-                        const blob = new Blob([result.manual_config], { type: 'text/plain' });
-                        const url = window.URL.createObjectURL(blob);
-                        errorDiv.innerHTML = `${result.error}<br><br><strong>Manual Fix:</strong> Create a file named <code>config.php</code> in the root directory and paste the following:<br><pre style="text-align:left; background:#000; padding:10px; margin-top:10px; border:1px solid #333;">${result.manual_config}</pre>`;
+                        errorDiv.innerHTML = `${result.error}<br><br><strong>Manual Fix:</strong> Create a file named <code>config.php</code> in the root directory and paste the following:<br><pre id="manual-code" style="text-align:left; background:#000; padding:10px; margin-top:10px; border:1px solid #333; color:#fff; overflow-x:auto; white-space:pre-wrap;"></pre>`;
+                        document.getElementById('manual-code').innerText = result.manual_config;
                         errorDiv.style.display = 'block';
                     } else {
                         throw new Error(result.error || 'Installation failed');
