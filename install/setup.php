@@ -1,13 +1,22 @@
 <?php
 // install/setup.php
 
+// Disable HTML error reporting to prevent breaking JSON response
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
+
+// Helper to send error response
+function sendError($msg) {
+    echo json_encode(['error' => $msg]);
+    exit;
+}
 
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input) {
-    echo json_encode(['error' => 'Invalid input']);
-    exit;
+    sendError('Invalid input');
 }
 
 $host = $input['host'] ?? 'localhost';
@@ -18,18 +27,17 @@ $adminEmail = $input['admin_email'] ?? '';
 $adminPass = $input['admin_pass'] ?? '';
 
 if (empty($name) || empty($user) || empty($adminEmail) || empty($adminPass)) {
-    echo json_encode(['error' => 'All fields required']);
-    exit;
+    sendError('All fields required');
 }
 
 // 1. Test Connection
 try {
+    // Note: On Dokploy, ensure $host is the service name (e.g. 'mariadb')
     $dsn = "mysql:host=$host;dbname=$name";
     $pdo = new PDO($dsn, $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
-    exit;
+    sendError('Database connection failed: ' . $e->getMessage());
 }
 
 // 2. Create Tables
@@ -123,8 +131,7 @@ try {
     $stmt->execute([':email' => $adminEmail, ':pass' => $passHash]);
 
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Table creation failed: ' . $e->getMessage()]);
-    exit;
+    sendError('Table creation failed: ' . $e->getMessage());
 }
 
 // 4. Write Config File
@@ -135,8 +142,10 @@ define('DB_USER', '" . addslashes($user) . "');
 define('DB_PASS', '" . addslashes($pass) . "');
 ";
 
-if (file_put_contents(__DIR__ . '/../config.php', $configContent)) {
+$configFile = __DIR__ . '/../config.php';
+if (@file_put_contents($configFile, $configContent)) {
     echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['error' => 'Failed to write config.php. Please check permissions.']);
+    sendError('Failed to write config.php at ' . realpath(__DIR__ . '/..') . '. Please check folder permissions.');
 }
+
