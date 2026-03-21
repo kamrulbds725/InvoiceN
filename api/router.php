@@ -40,24 +40,25 @@ function getJsonInput()
     return json_decode(file_get_contents('php://input'), true) ?? [];
 }
 
-// Basic router logic
-$requestUri = $_SERVER['REQUEST_URI'];
-$method = $_SERVER['REQUEST_METHOD'];
+try {
+    // Basic router logic
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $method = $_SERVER['REQUEST_METHOD'];
 
-// Handle both Rewrite and Direct Path
-$path = $_SERVER['PATH_INFO'] ?? '';
+    // Handle both Query Param, Rewrite and Direct Path
+    $path = $_GET['route'] ?? $_SERVER['PATH_INFO'] ?? '';
 
-if (empty($path)) {
-    $path = parse_url($requestUri, PHP_URL_PATH);
-    $basePath = '/api';
-    if (strpos($path, $basePath) === 0) {
-        $path = substr($path, strlen($basePath));
+    if (empty($path)) {
+        $path = parse_url($requestUri, PHP_URL_PATH);
+        $basePath = '/api';
+        if (strpos($path, $basePath) === 0) {
+            $path = substr($path, strlen($basePath));
+        }
+        // Remove router.php from path if present
+        $path = str_replace('/router.php', '', $path);
     }
-    // Remove router.php from path if present
-    $path = str_replace('/router.php', '', $path);
-}
 
-$parts = explode('/', trim($path, '/'));
+    $parts = explode('/', trim($path, '/'));
     $resource = $parts[0] ?? null;
     $id = $parts[1] ?? null;
 

@@ -17,7 +17,9 @@ export const API = {
         }
 
         try {
-            const response = await fetch(`${this.baseUrl}${endpoint}`, config);
+            // Use query parameter for route to ensure universal server compatibility (Nginx/Apache/LiteSpeed)
+            const separator = this.baseUrl.includes('?') ? '&' : '?';
+            const response = await fetch(`${this.baseUrl}${separator}route=${endpoint}`, config);
 
             // Handle 401 Unauthorized globally if needed (e.g. redirect to login)
             if (response.status === 401 && !endpoint.includes('/auth/login')) {
@@ -76,7 +78,8 @@ export const API = {
 
     async postMultipart(endpoint, formData) {
         try {
-            const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            const separator = this.baseUrl.includes('?') ? '&' : '?';
+            const response = await fetch(`${this.baseUrl}${separator}route=${endpoint}`, {
                 method: 'POST',
                 body: formData
                 // No headers needed, browser creates correct Content-Type with boundary
