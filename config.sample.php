@@ -4,7 +4,7 @@
  * Copy this file to config.php and update with your database details.
  */
 
-define('DB_HOST', 'invoice-inv-8jpxro');
-define('DB_NAME', 'inv');
-define('DB_USER', 'inv');
-define('DB_PASS', 'TjXQh98y680YzLvB7xyh');
+define('DB_HOST', 'DATABASE_HOST_HERE'); 
+define('DB_NAME', 'DATABASE_NAME_HERE');
+define('DB_USER', 'DATABASE_USER_HERE');
+define('DB_PASS', 'DATABASE_PASSWORD_HERE');
