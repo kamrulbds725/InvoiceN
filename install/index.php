@@ -143,22 +143,36 @@
             Simple Invoice Generator for Business Owners</p>
         <div id="error-msg" class="error"></div>
         <form id="install-form">
-            <div class="form-group">
-                <label>Database Host</label>
-                <input type="text" name="host" value="localhost" required>
-            </div>
-            <div class="form-group">
-                <label>Database Name</label>
-                <input type="text" name="name" required placeholder="invoicen">
-            </div>
-            <div class="form-group">
-                <label>Database User</label>
-                <input type="text" name="user" required placeholder="root">
-            </div>
-            <div class="form-group">
-                <label>Database Password</label>
-                <input type="password" name="pass" placeholder="Leave empty if none">
-            </div>
+            <?php
+            $envHost = getenv('DB_HOST');
+            if ($envHost):
+            ?>
+                <div style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 0.8rem; color: #0d9488;">
+                    <strong>Notice:</strong> Database is configured via Environment Variables. You only need to set up the Admin account.
+                </div>
+                <input type="hidden" name="host" value="<?php echo htmlspecialchars($envHost); ?>">
+                <input type="hidden" name="name" value="<?php echo htmlspecialchars(getenv('DB_NAME')); ?>">
+                <input type="hidden" name="user" value="<?php echo htmlspecialchars(getenv('DB_USER')); ?>">
+                <input type="hidden" name="pass" value="<?php echo htmlspecialchars(getenv('DB_PASS')); ?>">
+            <?php else: ?>
+                <div class="form-group">
+                    <label>Database Host</label>
+                    <input type="text" name="host" value="localhost" required>
+                </div>
+                <div class="form-group">
+                    <label>Database Name</label>
+                    <input type="text" name="name" required placeholder="invoicen">
+                </div>
+                <div class="form-group">
+                    <label>Database User</label>
+                    <input type="text" name="user" required placeholder="root">
+                </div>
+                <div class="form-group">
+                    <label>Database Password</label>
+                    <input type="password" name="pass" placeholder="Leave empty if none">
+                </div>
+            <?php endif; ?>
+
             <div class="form-group">
                 <label>Admin Email</label>
                 <input type="email" name="admin_email" required placeholder="admin@example.com">
@@ -167,7 +181,7 @@
                 <label>Admin Password</label>
                 <input type="password" name="admin_pass" required minlength="6">
             </div>
-            <button type="submit">Install</button>
+            <button type="submit">Install & Initialize</button>
         </form>
     </div>
 

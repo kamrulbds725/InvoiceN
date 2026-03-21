@@ -134,7 +134,12 @@ try {
     sendError('Table creation failed: ' . $e->getMessage());
 }
 
-// 4. Write Config File
+// 4. Write Config File (Skip if Environment Variables are being used)
+if (getenv('DB_HOST')) {
+    echo json_encode(['success' => true]);
+    exit;
+}
+
 $configContent = "<?php
 define('DB_HOST', '" . addslashes($host) . "');
 define('DB_NAME', '" . addslashes($name) . "');
