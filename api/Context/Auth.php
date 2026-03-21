@@ -28,14 +28,14 @@ class Auth
         }
     }
 
-    public function login($email, $password)
+    public function login($username, $password)
     {
-        if (empty($email) || empty($password)) {
-            return ['success' => false, 'error' => 'Email and password are required'];
+        if (empty($username) || empty($password)) {
+            return ['success' => false, 'error' => 'Username and password are required'];
         }
 
-        $stmt = $this->conn->prepare("SELECT id, password_hash FROM users WHERE email = :email LIMIT 1");
-        $stmt->bindParam(':email', $email);
+        $stmt = $this->conn->prepare("SELECT id, password_hash FROM users WHERE username = :username LIMIT 1");
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -72,7 +72,7 @@ class Auth
         }
 
         $id = $_SESSION['user_id'];
-        $stmt = $this->conn->prepare("SELECT id, email, created_at FROM users WHERE id = :id LIMIT 1");
+        $stmt = $this->conn->prepare("SELECT id, username, created_at FROM users WHERE id = :id LIMIT 1");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);

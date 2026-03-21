@@ -38,8 +38,8 @@ export function renderLogin() {
 
                 <form id="loginForm">
                     <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" id="username" class="form-input" placeholder="Enter email address" required>
+                        <label class="form-label">Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Password</label>
@@ -103,7 +103,7 @@ export function renderLogin() {
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('username').value;
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             // Show loading state
@@ -112,7 +112,7 @@ export function renderLogin() {
             submitBtn.innerText = 'Signing In...';
             submitBtn.disabled = true;
 
-            const result = await Auth.login(email, password);
+            const result = await Auth.login(username, password);
 
             if (result.success) {
                 // Always land on dashboard on login
@@ -121,7 +121,7 @@ export function renderLogin() {
             } else {
                 const errorEl = document.getElementById('loginError');
                 errorEl.style.display = 'block';
-                errorEl.textContent = result.error || 'Invalid email or password';
+                errorEl.textContent = result.error || 'Invalid username or password';
 
                 // Shake animation effect
                 const card = document.querySelector('.card');

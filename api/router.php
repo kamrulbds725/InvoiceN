@@ -70,7 +70,7 @@ $auth = new Auth($conn);
 if ($resource === 'auth') {
     if ($method === 'POST' && $id === 'login') {
         $input = getJsonInput();
-        $result = $auth->login($input['email'] ?? '', $input['password'] ?? '');
+        $result = $auth->login($input['username'] ?? '', $input['password'] ?? '');
         if ($result['success']) {
             jsonResponse($result);
         } else {

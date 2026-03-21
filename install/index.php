@@ -174,8 +174,8 @@
             <?php endif; ?>
 
             <div class="form-group">
-                <label>Admin Email</label>
-                <input type="email" name="admin_email" required placeholder="admin@example.com">
+                <label>Admin Username</label>
+                <input type="text" name="admin_user" required placeholder="admin">
             </div>
             <div class="form-group">
                 <label>Admin Password</label>

@@ -23,10 +23,10 @@ $host = $input['host'] ?? 'localhost';
 $name = $input['name'] ?? '';
 $user = $input['user'] ?? '';
 $pass = $input['pass'] ?? '';
-$adminEmail = $input['admin_email'] ?? '';
+$adminUser = $input['admin_user'] ?? '';
 $adminPass = $input['admin_pass'] ?? '';
 
-if (empty($name) || empty($user) || empty($adminEmail) || empty($adminPass)) {
+if (empty($name) || empty($user) || empty($adminUser) || empty($adminPass)) {
     sendError('All fields required');
 }
 
@@ -45,7 +45,7 @@ try {
     $sql = "
     CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        email VARCHAR(255) NOT NULL UNIQUE,
+        username VARCHAR(255) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -127,8 +127,8 @@ try {
 
     // 3. Create Admin User
     $passHash = password_hash($adminPass, PASSWORD_DEFAULT);
-    $stmt = $pdo->prepare("INSERT INTO users (email, password_hash) VALUES (:email, :pass) ON DUPLICATE KEY UPDATE password_hash = :pass");
-    $stmt->execute([':email' => $adminEmail, ':pass' => $passHash]);
+    $stmt = $pdo->prepare("INSERT INTO users (username, password_hash) VALUES (:username, :pass) ON DUPLICATE KEY UPDATE password_hash = :pass");
+    $stmt->execute([':username' => $adminUser, ':pass' => $passHash]);
 
 } catch (PDOException $e) {
     sendError('Table creation failed: ' . $e->getMessage());

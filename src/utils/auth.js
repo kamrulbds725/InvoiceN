@@ -10,9 +10,9 @@ export const Auth = {
         }
     },
 
-    async login(email, password) {
+    async login(username, password) {
         try {
-            const result = await API.post('/auth/login', { email, password });
+            const result = await API.post('/auth/login', { username, password });
             if (result.success) {
                 // Determine redirect based on result or just return success
                 return { success: true, user: result.user };

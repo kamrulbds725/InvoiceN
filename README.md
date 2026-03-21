@@ -16,7 +16,7 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 -   **Product/Service Management**: Manage your catalog.
 -   **Settings**: Configure company details, tax rates, currency, and email settings.
 -   **Automated Installer**: Easy-to-use wizard for first-time setup.
--   **Secure Auth**: Admin login system.
+-   **Secure Auth**: Modern admin login system (username based).
 -   **Dark Mode**: Stunning, modern UI design.
 -   **Fully Responsive**: Optimized for desktop, tablet, and mobile devices.
 
@@ -42,7 +42,9 @@ For Docker or cloud-based deployments where file permissions can be restrictive,
 - `DB_USER`: Your database username
 - `DB_PASS`: Your database password
 
-When these variables are detected, InvoiceN will automatically connect to your database and bypass the installation wizard.
+**Note:** After setting the environment variables, you must visit `your-app-url/install/index.php` one time to initialize the database tables and create your admin username and password.
+
+When these variables are detected, InvoiceN will automatically connect to your database.
 
 ## 💻 Local Development
 
