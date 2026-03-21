@@ -175,8 +175,22 @@ class SettingsController extends Controller
 
         // 1. Decode Base64
         $matches = [];
-        preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches);
-        $type = $matches[1] ?? 'png';
+        if (!preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
+            throw new Exception("Invalid image format");
+        }
+        
+        $type = strtolower($matches[1]);
+        $allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'svg+xml'];
+        
+        if (!in_array($type, $allowedTypes)) {
+            throw new Exception("Unsupported image type. Allowed: " . implode(', ', $allowedTypes));
+        }
+
+        // Normalize svg extension
+        if ($type === 'svg+xml') {
+            $type = 'svg';
+        }
+
         $data = substr($base64String, strpos($base64String, ',') + 1);
         $data = base64_decode($data);
 
