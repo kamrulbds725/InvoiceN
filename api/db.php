@@ -9,8 +9,16 @@ class Database {
     public $conn;
 
     public function __construct() {
+        // First check for Environment Variables (Docker/Dokploy way)
+        if (getenv('DB_HOST')) {
+            $this->host = getenv('DB_HOST');
+            $this->db_name = getenv('DB_NAME');
+            $this->username = getenv('DB_USER');
+            $this->password = getenv('DB_PASS');
+            return;
+        }
+
         if (!file_exists(__DIR__ . '/../config.php')) {
-            // If config doesn't exist, we might be in install mode or not set up
             return;
         }
         
