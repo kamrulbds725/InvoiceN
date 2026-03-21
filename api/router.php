@@ -1,9 +1,15 @@
 <?php
 // api/router.php
 
+// Start output buffering to catch any accidental output
+ob_start();
+
 // Disable HTML error reporting to prevent breaking JSON response
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
+
+// Force JSON header immediately
+header('Content-Type: application/json');
 
 // CORS Headers
 header('Access-Control-Allow-Origin: *');
@@ -19,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Helper to send JSON response
 function jsonResponse($data, $status = 200)
 {
+    // Clear any previous output (warnings, etc)
+    if (ob_get_length()) ob_clean();
+    
     http_response_code($status);
     header('Content-Type: application/json');
     echo json_encode($data);
@@ -35,19 +44,20 @@ function getJsonInput()
 $requestUri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Remove query string
-$path = parse_url($requestUri, PHP_URL_PATH);
+// Handle both Rewrite and Direct Path
+$path = $_SERVER['PATH_INFO'] ?? '';
 
-try {
-    // Simple path matching
-    // Expected format: /api/{resource}/{id?}
-
+if (empty($path)) {
+    $path = parse_url($requestUri, PHP_URL_PATH);
     $basePath = '/api';
     if (strpos($path, $basePath) === 0) {
         $path = substr($path, strlen($basePath));
     }
+    // Remove router.php from path if present
+    $path = str_replace('/router.php', '', $path);
+}
 
-    $parts = explode('/', trim($path, '/'));
+$parts = explode('/', trim($path, '/'));
     $resource = $parts[0] ?? null;
     $id = $parts[1] ?? null;
 

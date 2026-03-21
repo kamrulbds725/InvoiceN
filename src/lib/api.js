@@ -1,5 +1,5 @@
 export const API = {
-    baseUrl: '/api',
+    baseUrl: '/api/router.php',
 
     async request(endpoint, method = 'GET', data = null) {
         const headers = {
@@ -31,7 +31,21 @@ export const API = {
                 return null;
             }
 
-            const result = await response.json();
+            let result;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                try {
+                    result = await response.json();
+                } catch (e) {
+                    const text = await response.text();
+                    console.error('JSON Parsing Error. Raw response:', text);
+                    throw new Error('Server returned invalid JSON response');
+                }
+            } else {
+                const text = await response.text();
+                console.error('Non-JSON response received:', text);
+                throw new Error('Server returned non-JSON response');
+            }
 
             if (!response.ok) {
                 throw new Error(result.error || 'API Request Failed');
