@@ -208,8 +208,15 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Installation successful! Redirecting to login...');
-                    window.location.href = '../';
+                    btn.innerText = 'Success!';
+                    errorDiv.innerHTML = 'Installation successful! Redirecting to login...';
+                    errorDiv.style.background = '#064e3b';
+                    errorDiv.style.color = '#10b981';
+                    errorDiv.style.borderColor = '#065f46';
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '../';
+                    }, 2000);
                 } else {
                     if (result.manual_config) {
                         errorDiv.innerHTML = `${result.error}<br><br><strong>Manual Fix:</strong> Create a file named <code>config.php</code> in the root directory and paste the following:<br><pre id="manual-code" style="text-align:left; background:#000; padding:10px; margin-top:10px; border:1px solid #333; color:#fff; overflow-x:auto; white-space:pre-wrap;"></pre>`;
