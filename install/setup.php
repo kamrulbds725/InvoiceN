@@ -146,6 +146,11 @@ $configFile = __DIR__ . '/../config.php';
 if (@file_put_contents($configFile, $configContent)) {
     echo json_encode(['success' => true]);
 } else {
-    sendError('Failed to write config.php at ' . realpath(__DIR__ . '/..') . '. Please check folder permissions.');
+    // Return the content so the user can create it manually if permissions fail
+    echo json_encode([
+        'error' => 'Failed to write config.php. Please check folder permissions or create the file manually.',
+        'manual_config' => $configContent,
+        'path' => realpath(__DIR__ . '/..') . '/config.php'
+    ]);
 }
 
