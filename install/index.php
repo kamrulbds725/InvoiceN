@@ -9,16 +9,11 @@
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c2410c' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E">
     <style>
         :root {
-            /* Colors — Ark UI Dark Theme */
+            /* Colors — Ark UI Dark Theme (Simplified) */
             --color-bg-primary: #0d0d0d;
             --color-bg-secondary: #111111;
             --color-bg-tertiary: #191918;
-            --color-bg-card: #111111;
             
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
-            --gradient-overlay: linear-gradient(180deg, rgba(194, 65, 12, 0.07) 0%, rgba(0, 0, 0, 0) 100%);
-
             /* Text Colors */
             --color-text-primary: #eeeeec;
             --color-text-secondary: #b5b3ad;
@@ -26,14 +21,13 @@
 
             /* Accent Colors */
             --color-primary: #c2410c;
+            --color-primary-hover: #9a3412;
             
             /* Border */
-            --color-border: rgba(73, 72, 68, 0.18);
+            --color-border: #2a2a2a;
             
-            /* Spacing & Radius */
-            --radius-md: 0.5rem;
-            --radius-lg: 0.75rem;
-            --radius-xl: 1rem;
+            /* Radius */
+            --radius-md: 4px;
             
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
@@ -49,67 +43,24 @@
             margin: 0;
             padding: 1rem;
             box-sizing: border-box;
-            overflow-y: auto;
-        }
-
-        /* Animated Background */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 50%, rgba(194, 65, 12, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(194, 65, 12, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
         }
 
         .card {
             background: var(--color-bg-secondary);
             padding: 2.5rem;
-            border-radius: var(--radius-xl);
+            border-radius: var(--radius-md);
             border: 1px solid var(--color-border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 420px;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-overlay);
-            pointer-events: none;
+            max-width: 400px;
         }
 
         h1 {
-            position: relative;
             margin-top: 0;
-            color: var(--color-text-primary);
+            color: var(--color-primary);
             text-align: center;
             font-weight: 700;
             margin-bottom: 2rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        p {
-            position: relative;
-        }
-
-        form {
-            position: relative;
+            font-size: 1.75rem;
         }
 
         .form-group {
@@ -134,20 +85,18 @@
             border-radius: var(--radius-md);
             box-sizing: border-box;
             color: var(--color-text-primary);
-            font-size: 1rem;
-            transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
         input:focus {
             outline: none;
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.12);
         }
 
         button {
             width: 100%;
             padding: 0.875rem;
-            background: var(--gradient-primary);
+            background: var(--color-primary);
             color: white;
             border: none;
             border-radius: var(--radius-md);
@@ -155,27 +104,24 @@
             font-size: 1rem;
             cursor: pointer;
             margin-top: 1rem;
-            transition: opacity 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
         }
 
         button:hover {
-            opacity: 0.9;
+            background: var(--color-primary-hover);
         }
 
         button:disabled {
-            opacity: 0.7;
+            background: #444;
             cursor: not-allowed;
         }
 
         .error {
-            position: relative;
             color: #ef4444;
             margin-bottom: 1.5rem;
             text-align: center;
             padding: 0.75rem;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: #1a1010;
+            border: 1px solid #442222;
             border-radius: var(--radius-md);
             display: none;
             font-size: 0.875rem;
@@ -184,10 +130,6 @@
         @media (max-width: 480px) {
             .card {
                 padding: 1.5rem;
-            }
-
-            h1 {
-                margin-bottom: 1.5rem;
             }
         }
     </style>
