@@ -44,6 +44,12 @@ You can either provide a single connection string:
 Or individual variables:
 - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`
 
+#### 2. Initialize Database (Mandatory)
+Even after setting up environment variables, you **must visit** `your-app-url/install/index.php` manually the first time. This script will:
+- Create the necessary database tables.
+- Set up your initial **Admin Username** and **Password**.
+
+**Note:** You will not be able to log in until you complete this step.
 
 ## 💻 Local Development
 
