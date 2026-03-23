@@ -85,12 +85,6 @@ function getAppEnv($key, $default = null) {
     return $default;
 }
 
-// Helper to send error response
-function sendError($msg) {
-    echo json_encode(['error' => $msg]);
-    exit;
-}
-
 $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input) {
