@@ -26,7 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 function jsonResponse($data, $status = 200)
 {
     // Clear any previous output (warnings, etc)
-    if (ob_get_length()) ob_clean();
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     
     http_response_code($status);
     header('Content-Type: application/json');
