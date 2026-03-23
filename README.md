@@ -34,7 +34,7 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 3.  **Install**: Open your website URL. You will be redirected to the **Installation Wizard**.
 4.  **Setup**: Enter database credentials and create an admin account.
 
-### Docker & Cloud Installation (Dokploy, Railway, Heroku)
+### Docker & Cloud Installation (Dokploy, Coolify, Railway, Heroku)
 For Docker or cloud-based deployments where file permissions can be restrictive, you can bypass the `config.php` creation by using **Environment Variables**.
 
 #### 1. Database Configuration
@@ -47,7 +47,7 @@ Or individual variables:
 #### 2. Persistent Storage (Required for Logos)
 Cloud containers are ephemeral. To ensure your **Company Logo** and other uploads are not lost during redeployment, you **must** mount a persistent volume to the `/app/uploads` directory.
 
-**In Dokploy:**
+**In Dokploy / Coolify:**
 - Go to your Application -> **Volumes** tab.
 - Add a new volume:
   - **Host Path:** `/var/lib/docker/volumes/invoicen_uploads/_data` (or any path on your host)
