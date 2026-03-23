@@ -20,6 +20,20 @@ if (file_exists($envFile)) {
     }
 }
 
+function getAppEnv($key, $default = null) {
+    $val = getenv($key);
+    if ($val !== false) return $val;
+    if (isset($_ENV[$key])) return $_ENV[$key];
+    if (isset($_SERVER[$key])) return $_SERVER[$key];
+    $upper = strtoupper($key);
+    foreach ([$_ENV, $_SERVER] as $arr) {
+        foreach ($arr as $k => $v) {
+            if (strtoupper($k) === $upper) return $v;
+        }
+    }
+    return $default;
+}
+
 // Helper to send error response
 function sendError($msg) {
     echo json_encode(['error' => $msg]);
@@ -155,7 +169,7 @@ try {
 }
 
 // 4. Write Config File (Skip if Environment Variables are being used)
-if (getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null)) {
+if (getAppEnv('DB_HOST')) {
     echo json_encode(['success' => true]);
     exit;
 }

@@ -1,0 +1,22 @@
+# nixpacks.toml for Dokploy/Nixpacks
+# This file ensures that environment variables are correctly passed to PHP-FPM
+
+[staticAssets]
+"php-fpm.conf" = '''
+[www]
+listen = 127.0.0.1:9000
+user = www-data
+group = www-data
+listen.owner = www-data
+listen.group = www-data
+pm = dynamic
+pm.max_children = 50
+pm.min_spare_servers = 4
+pm.max_spare_servers = 32
+pm.start_servers = 18
+clear_env = no
+'''
+
+[phases.setup]
+# Ensure the E (Environment) is in variables_order for $_ENV to be populated
+cmds = ["echo 'variables_order = \"EGPCS\"' >> /usr/local/etc/php/conf.d/docker-php-ext-vars.ini"]

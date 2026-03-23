@@ -1,17 +1,34 @@
 <?php
 // Support Environment Variables (Docker/Dokploy) or config.php
+function getAppEnv($key, $default = null) {
+    $val = getenv($key);
+    if ($val !== false) return $val;
+    if (isset($_ENV[$key])) return $_ENV[$key];
+    if (isset($_SERVER[$key])) return $_SERVER[$key];
+    
+    // Case-insensitive fallback
+    $upper = strtoupper($key);
+    foreach ([$_ENV, $_SERVER] as $arr) {
+        foreach ($arr as $k => $v) {
+            if (strtoupper($k) === $upper) return $v;
+        }
+    }
+    return $default;
+}
+
 if (file_exists('.env')) {
     $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
         list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
         $_ENV[trim($name)] = trim($value);
         $_SERVER[trim($name)] = trim($value);
-        putenv(trim($name) . '=' . trim($value));
     }
 }
 
-$dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
+$dbHost = getAppEnv('DB_HOST');
 $isConfigured = file_exists('config.php') || $dbHost;
 
 if (!$isConfigured) {

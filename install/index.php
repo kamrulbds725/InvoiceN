@@ -144,11 +144,26 @@
             $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
                 if (strpos(trim($line), '#') === 0) continue;
+                if (strpos($line, '=') === false) continue;
                 list($name, $value) = explode('=', $line, 2);
                 putenv(trim($name) . '=' . trim($value));
                 $_ENV[trim($name)] = trim($value);
                 $_SERVER[trim($name)] = trim($value);
             }
+        }
+
+        function getAppEnv($key, $default = null) {
+            $val = getenv($key);
+            if ($val !== false) return $val;
+            if (isset($_ENV[$key])) return $_ENV[$key];
+            if (isset($_SERVER[$key])) return $_SERVER[$key];
+            $upper = strtoupper($key);
+            foreach ([$_ENV, $_SERVER] as $arr) {
+                foreach ($arr as $k => $v) {
+                    if (strtoupper($k) === $upper) return $v;
+                }
+            }
+            return $default;
         }
         ?>
         <h1>InvoiceN</h1>
@@ -159,22 +174,22 @@
         <!-- Debug Helper -->
         <div style="font-size: 0.6rem; color: #333; margin-bottom: 10px;">
             DEBUG: <?php 
-                $check = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'None');
+                $check = getAppEnv('DB_HOST', 'None');
                 echo "DB_HOST Detected: " . ($check !== 'None' ? 'YES (' . $check . ')' : 'NO');
             ?>
         </div>
         <form id="install-form">
             <?php
-            $envHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
+            $envHost = getAppEnv('DB_HOST');
             if ($envHost):
             ?>
                 <div style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 0.8rem; color: #0d9488;">
                     <strong>Notice:</strong> Database is configured via Environment Variables. You only need to set up the Admin account.
                 </div>
                 <input type="hidden" name="host" value="<?php echo htmlspecialchars($envHost); ?>">
-                <input type="hidden" name="name" value="<?php echo htmlspecialchars(getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? '')); ?>">
-                <input type="hidden" name="user" value="<?php echo htmlspecialchars(getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? '')); ?>">
-                <input type="hidden" name="pass" value="<?php echo htmlspecialchars(getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? '')); ?>">
+                <input type="hidden" name="name" value="<?php echo htmlspecialchars(getAppEnv('DB_NAME', '')); ?>">
+                <input type="hidden" name="user" value="<?php echo htmlspecialchars(getAppEnv('DB_USER', '')); ?>">
+                <input type="hidden" name="pass" value="<?php echo htmlspecialchars(getAppEnv('DB_PASS', '')); ?>">
             <?php else: ?>
                 <div class="form-group">
                     <label>Database Host</label>

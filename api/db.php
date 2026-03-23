@@ -8,6 +8,22 @@ class Database {
     private $password;
     public $conn;
 
+    private function getAppEnv($key, $default = null) {
+        $val = getenv($key);
+        if ($val !== false) return $val;
+        if (isset($_ENV[$key])) return $_ENV[$key];
+        if (isset($_SERVER[$key])) return $_SERVER[$key];
+        
+        // Case-insensitive fallback
+        $upper = strtoupper($key);
+        foreach ([$_ENV, $_SERVER] as $arr) {
+            foreach ($arr as $k => $v) {
+                if (strtoupper($k) === $upper) return $v;
+            }
+        }
+        return $default;
+    }
+
     public function __construct() {
         // Load .env if it exists
         $envFile = __DIR__ . '/../.env';
@@ -23,12 +39,12 @@ class Database {
         }
 
         // First check for Environment Variables (Docker/Dokploy way)
-        $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
+        $dbHost = $this->getAppEnv('DB_HOST');
         if ($dbHost) {
             $this->host = $dbHost;
-            $this->db_name = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null);
-            $this->username = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? null);
-            $this->password = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? null);
+            $this->db_name = $this->getAppEnv('DB_NAME');
+            $this->username = $this->getAppEnv('DB_USER');
+            $this->password = $this->getAppEnv('DB_PASS');
             return;
         }
 
