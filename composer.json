@@ -1,0 +1,21 @@
+{
+    "name": "kamrulbds725/invoicen",
+    "description": "Simple Invoice Generator for Business Owners",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "ext-pdo_mysql": "*",
+        "ext-gd": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "ext-iconv": "*",
+        "ext-xml": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kamrul Hasan",
+            "email": "kamrulbds725@gmail.com"
+        }
+    ]
+}
