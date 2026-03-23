@@ -10,6 +10,22 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
+// Global Error Handler for cPanel/Server crashes
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error !== NULL && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        echo json_encode([
+            'error' => 'A fatal server error occurred.',
+            'details' => $error['message'],
+            'file' => $error['file'],
+            'line' => $error['line']
+        ]);
+    }
+});
+
 // Helper to send error response
 function sendError($msg) {
     while (ob_get_level()) {
