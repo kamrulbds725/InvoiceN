@@ -1,11 +1,32 @@
 <?php
 // install/setup.php
 
+// Start output buffering
+ob_start();
+
 // Disable HTML error reporting to prevent breaking JSON response
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
+
+// Helper to send error response
+function sendError($msg) {
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    echo json_encode(['error' => $msg]);
+    exit;
+}
+
+// Helper to send success response
+function sendSuccess($data = []) {
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    echo json_encode(array_merge(['success' => true], $data));
+    exit;
+}
 
 // Load .env if it exists
 $envFile = __DIR__ . '/../.env';
@@ -184,8 +205,7 @@ try {
 
 // 4. Write Config File (Skip if Environment Variables are being used)
 if (getAppEnv('DB_HOST')) {
-    echo json_encode(['success' => true]);
-    exit;
+    sendSuccess();
 }
 
 $configContent = "<?php
@@ -197,13 +217,13 @@ define('DB_PASS', '" . addslashes($pass) . "');
 
 $configFile = __DIR__ . '/../config.php';
 if (@file_put_contents($configFile, $configContent)) {
-    echo json_encode(['success' => true]);
+    sendSuccess();
 } else {
     // Return the content so the user can create it manually if permissions fail
-    echo json_encode([
-        'error' => 'Failed to write config.php. Please check folder permissions or create the file manually.',
+    sendSuccess([
         'manual_config' => $configContent,
-        'path' => realpath(__DIR__ . '/..') . '/config.php'
+        'path' => realpath(__DIR__ . '/..') . '/config.php',
+        'error' => 'Failed to write config.php. Please check folder permissions or create the file manually.'
     ]);
 }
 
