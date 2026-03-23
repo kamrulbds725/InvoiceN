@@ -107,7 +107,7 @@ try {
         rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=<?php echo filemtime('style.css'); ?>">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime('assets/css/style.css'); ?>">
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -313,7 +313,7 @@ try {
     </script>
 
     <!-- Scripts -->
-    <script type="module" src="main.js?v=<?php echo filemtime('main.js'); ?>"></script>
+    <script type="module" src="assets/js/main.js?v=<?php echo filemtime('assets/js/main.js'); ?>"></script>
 </body>
 
 </html>

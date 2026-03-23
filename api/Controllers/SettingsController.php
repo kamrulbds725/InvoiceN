@@ -23,10 +23,9 @@ class SettingsController extends Controller
     private function upgradeDatabase()
     {
         try {
-            // Test if smtp_host column exists
+            // 1. Add SMTP columns if missing
             $this->conn->query("SELECT smtp_host FROM settings LIMIT 1");
         } catch (PDOException $e) {
-            // If it fails, that means the columns are missing. Add them explicitly.
             try {
                 $this->conn->exec("
                     ALTER TABLE settings 
@@ -39,9 +38,14 @@ class SettingsController extends Controller
                     ADD COLUMN smtp_from_name VARCHAR(255),
                     ADD COLUMN smtp_from_email VARCHAR(255)
                 ");
-            } catch (PDOException $e2) {
-                // Ignore if it fails (perhaps partial upgrade)
-            }
+            } catch (PDOException $e2) {}
+        }
+
+        try {
+            // 2. Ensure logo column is LONGTEXT for Base64 storage
+            $this->conn->exec("ALTER TABLE settings MODIFY COLUMN logo LONGTEXT");
+        } catch (PDOException $e) {
+            // Column might already be LONGTEXT or doesn't exist yet (unlikely)
         }
     }
 
@@ -53,11 +57,8 @@ class SettingsController extends Controller
         $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($settings) {
-            // Don't expose password if not needed, or client handles masking
-            // For now, return it so user can see it filled (or mask it in frontend)
             $this->jsonResponse($settings);
         } else {
-            // Return empty object or defaults if not found (let frontend handle defaults)
             $this->jsonResponse(new stdClass());
         }
     }
@@ -74,16 +75,14 @@ class SettingsController extends Controller
         }
 
         // Check if logo is a base64 string (new upload)
+        // We now store the entire data URI in the database
         if (isset($data['logo']) && strpos($data['logo'], 'data:image') === 0) {
-            $data['logo'] = $this->handleLogoUpload($data['logo']);
+            // No action needed, $data['logo'] already contains the base64 string
         } elseif (array_key_exists('logo', $data) && empty($data['logo'])) {
-            // If key exists but value is null/empty, user wants to delete logo
-            $this->deleteLogo();
-            $data['logo'] = null; // Ensure null is passed to DB
+            $data['logo'] = null;
         }
 
-        // Upsert approach
-        // Check if exists first
+        // Upsert approach...
         $stmtCheck = $this->conn->prepare("SELECT id FROM settings WHERE user_id = :user_id");
         $stmtCheck->bindParam(':user_id', $this->userId);
         $stmtCheck->execute();
@@ -93,7 +92,6 @@ class SettingsController extends Controller
             $sql = "UPDATE settings SET updated_at = NOW()";
             $params = [':user_id' => $this->userId];
 
-            // Dynamic fields mapping
             $fields = [
                 'companyName' => 'company_name',
                 'companyEmail' => 'company_email',
@@ -103,7 +101,6 @@ class SettingsController extends Controller
                 'taxRate' => 'tax_rate',
                 'currency' => 'currency',
                 'invoicePrefix' => 'invoice_prefix',
-                // Email Settings
                 'emailDriver' => 'email_driver',
                 'smtpHost' => 'smtp_host',
                 'smtpPort' => 'smtp_port',
@@ -115,7 +112,6 @@ class SettingsController extends Controller
             ];
 
             foreach ($fields as $key => $dbCol) {
-                // Use array_key_exists to allow updating to NULL (like deleting logo)
                 if (array_key_exists($key, $data)) {
                     $sql .= ", $dbCol = :$dbCol";
                     $params[":$dbCol"] = $data[$key];
@@ -153,7 +149,6 @@ class SettingsController extends Controller
                 ':tax_rate' => $data['taxRate'] ?? 0,
                 ':currency' => $data['currency'] ?? 'USD',
                 ':invoice_prefix' => $data['invoicePrefix'] ?? 'INV',
-
                 ':email_driver' => $data['emailDriver'] ?? 'mail',
                 ':smtp_host' => $data['smtpHost'] ?? null,
                 ':smtp_port' => $data['smtpPort'] ?? null,
@@ -168,80 +163,8 @@ class SettingsController extends Controller
         $this->get();
     }
 
-    private function handleLogoUpload($base64String)
-    {
-        // Delete old logo first
-        $this->deleteLogo();
+    // Removed handleLogoUpload and deleteLogo as they are no longer needed for file storage
 
-        // 1. Decode Base64
-        $matches = [];
-        if (!preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches)) {
-            throw new Exception("Invalid image format");
-        }
-        
-        $type = strtolower($matches[1]);
-        $allowedTypes = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'svg+xml'];
-        
-        if (!in_array($type, $allowedTypes)) {
-            throw new Exception("Unsupported image type. Allowed: " . implode(', ', $allowedTypes));
-        }
-
-        // Normalize svg extension
-        if ($type === 'svg+xml') {
-            $type = 'svg';
-        }
-
-        $data = substr($base64String, strpos($base64String, ',') + 1);
-        $data = base64_decode($data);
-
-        if ($data === false) {
-            throw new Exception("Invalid image data");
-        }
-
-        // 2. Create Uploads Directory
-        $uploadDir = __DIR__ . '/../../uploads/';
-        if (!file_exists($uploadDir)) {
-            if (!mkdir($uploadDir, 0777, true)) {
-                throw new Exception("Failed to create uploads directory. Check folder permissions.");
-            }
-        }
-
-        // Ensure directory is writable even if it was created by another process/mount
-        if (!is_writable($uploadDir)) {
-            @chmod($uploadDir, 0777);
-        }
-
-        // 3. Generate unique filename
-        $fileName = 'logo_' . $this->userId . '_' . time() . '.' . $type;
-        $filePath = $uploadDir . $fileName;
-
-        // 4. Save file
-        if (file_put_contents($filePath, $data) === false) {
-            $error = error_get_last();
-            throw new Exception("Failed to save logo file: " . ($error['message'] ?? 'Unknown error'));
-        }
-
-        // Ensure the uploaded file is readable by the web server
-        @chmod($filePath, 0644);
-
-        // 5. Return public URL
-        // Assuming API is at /api, so uploads is at root /uploads
-        // We need to return a relative path that the frontend can use
-        return 'uploads/' . $fileName;
-    }
-
-    private function deleteLogo()
-    {
-        // Get current logo path
-        $stmt = $this->conn->prepare("SELECT logo FROM settings WHERE user_id = :user_id");
-        $stmt->bindParam(':user_id', $this->userId);
-        $stmt->execute();
-        $currentLogo = $stmt->fetchColumn();
-
-        if ($currentLogo && file_exists(__DIR__ . '/../../' . $currentLogo)) {
-            unlink(__DIR__ . '/../../' . $currentLogo);
-        }
-    }
 
     private function reset()
     {

@@ -155,7 +155,7 @@ try {
         company_email VARCHAR(255),
         company_phone VARCHAR(50),
         company_address TEXT,
-        logo VARCHAR(255),
+        logo LONGTEXT,
         tax_rate DECIMAL(5, 2),
         currency VARCHAR(10),
         invoice_prefix VARCHAR(20),

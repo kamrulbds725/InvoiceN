@@ -1,6 +1,6 @@
 # InvoiceN — Simple Invoice Generator for Business Owners
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) ![PHP](https://img.shields.io/badge/php-%3E%3D8.0-8892BF.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) ![PHP](https://img.shields.io/badge/php-%3E%3D8.2-8892BF.svg)
 
 A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL**. Manage clients, products, and invoices with a beautiful, dark-themed interface.
 
@@ -22,7 +22,7 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 
 ## 📋 Requirements
 
--   **PHP**: 8.0 or higher
+-   **PHP**: 8.2 or higher
 -   **Database**: MySQL 5.7+ or MariaDB
 -   **Extensions**: `pdo_mysql`, `gd`, `mbstring` enabled
 
@@ -37,29 +37,13 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 ### Docker & Cloud Installation (Dokploy, Coolify, Railway, Heroku)
 For Docker or cloud-based deployments where file permissions can be restrictive, you can bypass the `config.php` creation by using **Environment Variables**.
 
-#### 1. Database Configuration
+#### . Database Configuration
 You can either provide a single connection string:
 - `DATABASE_URL`: `mysql://user:pass@host:3306/dbname`
 
 Or individual variables:
 - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`
 
-#### 2. Persistent Storage (Required for Logos)
-Cloud containers are ephemeral. To ensure your **Company Logo** and other uploads are not lost during redeployment, you **must** mount a persistent volume to the `/app/uploads` directory.
-
-**In Dokploy / Coolify:**
-- Go to your Application -> **Volumes** tab.
-- Add a new volume:
-  - **Host Path:** `/var/lib/docker/volumes/invoicen_uploads/_data` (or any path on your host)
-  - **Mount Path:** `/app/uploads`
-
-**In Railway:**
-- Right-click your Project Canvas -> **New** -> **Volume**.
-- Connect the volume to your Application.
-- Set the **Mount Path** to `/app/uploads`.
-
-#### 3. Mandatory Initialization
-Even when using environment variables, you **must** visit `your-app-url/install/index.php` once to initialize the database tables and create your initial admin account.
 
 ## 💻 Local Development
 
@@ -73,9 +57,9 @@ Even when using environment variables, you **must** visit `your-app-url/install/
 ## 📂 Project Structure
 
 -   `api/` - RESTful Backend Controllers & Database Logic
+-   `assets/` - CSS and JS static assets
 -   `install/` - Automated Installation Wizard
 -   `src/` - Frontend UI Components (Vanilla JS)
--   `style.css` - Custom Dark-Themed UI Styles
 -   `config.php` - Database Configuration (auto-generated)
 -   `.env` - Environment Variable fallback (optional)
 

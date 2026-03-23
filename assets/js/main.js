@@ -1,17 +1,17 @@
 // Main Application Entry Point
 
-import router from './src/router.js';
-import { initializeData, ClientStore, SettingsStore } from './src/data/store.js';
-import { initializeModal, initializeConfirm } from './src/components/Modal.js';
-import { initializeQuickCreate } from './src/components/QuickCreateModal.js';
-import { renderDashboard } from './src/views/Dashboard.js';
-import { renderInvoices } from './src/views/Invoices.js';
-import { renderProducts } from './src/views/Products.js';
-import { renderClients } from './src/views/Clients.js';
-import { renderSettings } from './src/views/Settings.js';
-import { renderLogin } from './src/views/Login.js';
-import { Auth } from './src/utils/auth.js';
-import { initializeMobileMenu } from './src/utils/mobile.js';
+import router from '../../src/router.js';
+import { initializeData, ClientStore, SettingsStore } from '../../src/data/store.js';
+import { initializeModal, initializeConfirm } from '../../src/components/Modal.js';
+import { initializeQuickCreate } from '../../src/components/QuickCreateModal.js';
+import { renderDashboard } from '../../src/views/Dashboard.js';
+import { renderInvoices } from '../../src/views/Invoices.js';
+import { renderProducts } from '../../src/views/Products.js';
+import { renderClients } from '../../src/views/Clients.js';
+import { renderSettings } from '../../src/views/Settings.js';
+import { renderLogin } from '../../src/views/Login.js';
+import { Auth } from '../../src/utils/auth.js';
+import { initializeMobileMenu } from '../../src/utils/mobile.js';
 
 // Initialize application
 async function initApp() {
