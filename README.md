@@ -17,7 +17,7 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 -   **Settings**: Configure company details, tax rates, currency, and email settings.
 -   **Automated Installer**: Easy-to-use wizard for first-time setup.
 -   **Secure Auth**: Modern admin login system (username based).
--   **Dark Mode**: Stunning, modern UI design.
+-   **Dark Mode**: Stunning, modern UI design with loading animations for a smooth UX.
 -   **Fully Responsive**: Optimized for desktop, tablet, and mobile devices.
 
 ## 📋 Requirements
@@ -34,17 +34,32 @@ A Simple, self-hosted invoicing dashboard built with **Vanilla PHP** and **MySQL
 3.  **Install**: Open your website URL. You will be redirected to the **Installation Wizard**.
 4.  **Setup**: Enter database credentials and create an admin account.
 
-### Docker Installation
-For Docker or cloud-based deployments where file permissions can be restrictive, you can bypass the `config.php` creation by using **Environment Variables**. Set the following variables in your container environment:
+### Docker & Cloud Installation (Dokploy, Railway, Heroku)
+For Docker or cloud-based deployments where file permissions can be restrictive, you can bypass the `config.php` creation by using **Environment Variables**.
 
-- `DB_HOST`: Your database host (e.g., `mariadb` or your service name)
-- `DB_NAME`: Your database name
-- `DB_USER`: Your database username
-- `DB_PASS`: Your database password
+#### 1. Database Configuration
+You can either provide a single connection string:
+- `DATABASE_URL`: `mysql://user:pass@host:3306/dbname`
 
-**Note:** After setting the environment variables, you must visit `your-app-url/install/index.php` one time to initialize the database tables and create your admin username and password.
+Or individual variables:
+- `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`
 
-When these variables are detected, InvoiceN will automatically connect to your database.
+#### 2. Persistent Storage (Required for Logos)
+Cloud containers are ephemeral. To ensure your **Company Logo** and other uploads are not lost during redeployment, you **must** mount a persistent volume to the `/app/uploads` directory.
+
+**In Dokploy:**
+- Go to your Application -> **Volumes** tab.
+- Add a new volume:
+  - **Host Path:** `/var/lib/docker/volumes/invoicen_uploads/_data` (or any path on your host)
+  - **Mount Path:** `/app/uploads`
+
+**In Railway:**
+- Right-click your Project Canvas -> **New** -> **Volume**.
+- Connect the volume to your Application.
+- Set the **Mount Path** to `/app/uploads`.
+
+#### 3. Mandatory Initialization
+Even when using environment variables, you **must** visit `your-app-url/install/index.php` once to initialize the database tables and create your initial admin account.
 
 ## 💻 Local Development
 
@@ -62,6 +77,7 @@ When these variables are detected, InvoiceN will automatically connect to your d
 -   `src/` - Frontend UI Components (Vanilla JS)
 -   `style.css` - Custom Dark-Themed UI Styles
 -   `config.php` - Database Configuration (auto-generated)
+-   `.env` - Environment Variable fallback (optional)
 
 ## 🌟 Why InvoiceN?
 
