@@ -1,6 +1,20 @@
 <?php
 // Support Environment Variables (Docker/Dokploy) or config.php
 function getAppEnv($key, $default = null) {
+    // Check for DATABASE_URL first if we're looking for DB related info
+    $dbUrl = getenv('DATABASE_URL') ?: ($_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null);
+    if ($dbUrl && in_array($key, ['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'])) {
+        $parsed = parse_url($dbUrl);
+        if ($parsed) {
+            switch ($key) {
+                case 'DB_HOST': return $parsed['host'] . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
+                case 'DB_USER': return $parsed['user'] ?? null;
+                case 'DB_PASS': return $parsed['pass'] ?? null;
+                case 'DB_NAME': return ltrim($parsed['path'], '/') ?? null;
+            }
+        }
+    }
+
     $val = getenv($key);
     if ($val !== false) return $val;
     if (isset($_ENV[$key])) return $_ENV[$key];
