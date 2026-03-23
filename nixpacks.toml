@@ -16,7 +16,3 @@ pm.max_spare_servers = 32
 pm.start_servers = 18
 clear_env = no
 '''
-
-[phases.setup]
-# Ensure the E (Environment) is in variables_order for $_ENV to be populated
-cmds = ["echo 'variables_order = \"EGPCS\"' >> /usr/local/etc/php/conf.d/docker-php-ext-vars.ini"]
