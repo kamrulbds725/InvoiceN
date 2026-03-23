@@ -1,6 +1,20 @@
 <?php
 header('Content-Type: application/json');
 
+// Load .env if it exists
+$envFile = __DIR__ . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
+        list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+        $_ENV[trim($name)] = trim($value);
+        $_SERVER[trim($name)] = trim($value);
+    }
+}
+
 $envData = [
     'getenv' => [
         'DB_HOST' => getenv('DB_HOST'),
@@ -18,7 +32,7 @@ $envData = [
         'DB_NAME' => $_SERVER['DB_NAME'] ?? 'NOT_SET',
         'DB_USER' => $_SERVER['DB_USER'] ?? 'NOT_SET',
     ],
-    'all_server_keys' => array_keys($_SERVER),
+    'dot_env_exists' => file_exists('.env'),
     'php_sapi' => php_sapi_name()
 ];
 
