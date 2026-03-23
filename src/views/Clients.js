@@ -9,7 +9,17 @@ import { renderClientForm } from '../components/ClientForm.js';
 export async function renderClients() {
     const app = document.getElementById('app');
 
-    // app.innerHTML = '<div class="loading">Loading clients...</div>';
+    // Show loading skeleton
+    app.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-2">
+                <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-sm);">Clients</h1>
+            </div>
+            <div class="card" style="display: flex; justify-content: center; padding: 4rem;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    `;
 
     const [clients, invoices] = await Promise.all([
         ClientStore.getAll(),

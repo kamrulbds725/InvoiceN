@@ -6,8 +6,17 @@ import { formatCurrency, getInvoiceStats, calculateMonthlyRevenue, getMonthName,
 export async function renderDashboard() {
     const app = document.getElementById('app');
 
-    // Show loading skeleton or spinner if needed, but for now just wait
-    // app.innerHTML = '<div class="loading">Loading dashboard...</div>';
+    // Show loading skeleton
+    app.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-2">
+                <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-sm);">Dashboard</h1>
+            </div>
+            <div class="card" style="display: flex; justify-content: center; padding: 4rem;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    `;
 
     const [invoices, clients, settings] = await Promise.all([
         InvoiceStore.getAll(),

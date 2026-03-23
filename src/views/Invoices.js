@@ -23,7 +23,17 @@ export async function renderInvoices() {
 
     const app = document.getElementById('app');
 
-    // app.innerHTML = '<div class="loading">Loading invoices...</div>';
+    // Show skeleton/loading state
+    app.innerHTML = `
+        <div class="fade-in">
+            <div class="mb-2">
+                <h1 style="font-size: var(--font-size-3xl); font-weight: 800; margin-bottom: var(--spacing-sm);">Invoices</h1>
+            </div>
+            <div class="card" style="display: flex; justify-content: center; padding: 4rem;">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    `;
 
     // Fetch fresh data
     const [invoices, clients, settings] = await Promise.all([
