@@ -409,7 +409,7 @@ async function handleLogoUpload(event) {
             await renderSettings();
             Toast.show('Logo uploaded successfully');
         } catch (error) {
-            Toast.show('Failed to upload logo', 'error');
+            Toast.show('Upload failed: ' + (error.message || 'Unknown error'), 'error');
         }
     };
     reader.readAsDataURL(file);
