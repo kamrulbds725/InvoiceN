@@ -185,13 +185,6 @@
             style="text-align:center; color: var(--color-text-tertiary); font-size:0.875rem; margin-top:-1.25rem; margin-bottom:1.75rem;">
             Simple Invoice Generator for Business Owners</p>
         <div id="error-msg" class="error"></div>
-        <!-- Debug Helper -->
-        <div style="font-size: 0.6rem; color: #333; margin-bottom: 10px;">
-            DEBUG: <?php 
-                $check = getAppEnv('DB_HOST', 'None');
-                echo "DB_HOST Detected: " . ($check !== 'None' ? 'YES (' . $check . ')' : 'NO');
-            ?>
-        </div>
         <form id="install-form">
             <?php
             $envHost = getAppEnv('DB_HOST');
