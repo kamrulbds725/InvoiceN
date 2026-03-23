@@ -10,11 +10,12 @@ class Database {
 
     public function __construct() {
         // First check for Environment Variables (Docker/Dokploy way)
-        if (getenv('DB_HOST')) {
-            $this->host = getenv('DB_HOST');
-            $this->db_name = getenv('DB_NAME');
-            $this->username = getenv('DB_USER');
-            $this->password = getenv('DB_PASS');
+        $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
+        if ($dbHost) {
+            $this->host = $dbHost;
+            $this->db_name = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? null);
+            $this->username = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? null);
+            $this->password = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? null);
             return;
         }
 

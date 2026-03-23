@@ -142,7 +142,7 @@ try {
 }
 
 // 4. Write Config File (Skip if Environment Variables are being used)
-if (getenv('DB_HOST')) {
+if (getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null)) {
     echo json_encode(['success' => true]);
     exit;
 }

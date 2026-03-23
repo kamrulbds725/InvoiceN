@@ -144,16 +144,16 @@
         <div id="error-msg" class="error"></div>
         <form id="install-form">
             <?php
-            $envHost = getenv('DB_HOST');
+            $envHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
             if ($envHost):
             ?>
                 <div style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); padding: 10px; border-radius: 4px; margin-bottom: 20px; font-size: 0.8rem; color: #0d9488;">
                     <strong>Notice:</strong> Database is configured via Environment Variables. You only need to set up the Admin account.
                 </div>
                 <input type="hidden" name="host" value="<?php echo htmlspecialchars($envHost); ?>">
-                <input type="hidden" name="name" value="<?php echo htmlspecialchars(getenv('DB_NAME')); ?>">
-                <input type="hidden" name="user" value="<?php echo htmlspecialchars(getenv('DB_USER')); ?>">
-                <input type="hidden" name="pass" value="<?php echo htmlspecialchars(getenv('DB_PASS')); ?>">
+                <input type="hidden" name="name" value="<?php echo htmlspecialchars(getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? $_SERVER['DB_NAME'] ?? '')); ?>">
+                <input type="hidden" name="user" value="<?php echo htmlspecialchars(getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? $_SERVER['DB_USER'] ?? '')); ?>">
+                <input type="hidden" name="pass" value="<?php echo htmlspecialchars(getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? $_SERVER['DB_PASS'] ?? '')); ?>">
             <?php else: ?>
                 <div class="form-group">
                     <label>Database Host</label>

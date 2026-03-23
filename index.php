@@ -1,6 +1,7 @@
 <?php
 // Support Environment Variables (Docker/Dokploy) or config.php
-$isConfigured = file_exists('config.php') || getenv('DB_HOST');
+$dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
+$isConfigured = file_exists('config.php') || $dbHost;
 
 if (!$isConfigured) {
     header('Location: install/index.php');
