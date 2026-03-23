@@ -58,18 +58,31 @@ try {
     $db = $database->connect();
     
     if ($db) {
-        $stmt = $db->query("SELECT id FROM users LIMIT 1");
-        if (!$stmt) {
+        // Use a more robust check for table existence
+        $tableExists = $db->query("SHOW TABLES LIKE 'users'")->rowCount() > 0;
+        if ($tableExists) {
+            $stmt = $db->query("SELECT id FROM users LIMIT 1");
+            $hasUser = $stmt ? $stmt->fetch() : false;
+            
+            if (!$hasUser) {
+                header('Location: install/index.php');
+                exit;
+            }
+            // If we have a user, proceed to the app!
+        } else {
             header('Location: install/index.php');
             exit;
         }
     } else {
-        // Connection failed, let the installer handle it/show the error
+        // If we can't connect, go to installer to show error
         header('Location: install/index.php');
         exit;
     }
+} catch (PDOException $e) {
+    // If table doesn't exist, PDO might throw exception depending on settings
+    header('Location: install/index.php');
+    exit;
 } catch (Exception $e) {
-    // Tables don't exist yet, redirect to installer
     header('Location: install/index.php');
     exit;
 }
