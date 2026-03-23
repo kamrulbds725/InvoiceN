@@ -201,7 +201,14 @@ class SettingsController extends Controller
         // 2. Create Uploads Directory
         $uploadDir = __DIR__ . '/../../uploads/';
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            if (!mkdir($uploadDir, 0777, true)) {
+                throw new Exception("Failed to create uploads directory. Check folder permissions.");
+            }
+        }
+
+        // Ensure directory is writable even if it was created by another process/mount
+        if (!is_writable($uploadDir)) {
+            @chmod($uploadDir, 0777);
         }
 
         // 3. Generate unique filename
@@ -209,7 +216,13 @@ class SettingsController extends Controller
         $filePath = $uploadDir . $fileName;
 
         // 4. Save file
-        file_put_contents($filePath, $data);
+        if (file_put_contents($filePath, $data) === false) {
+            $error = error_get_last();
+            throw new Exception("Failed to save logo file: " . ($error['message'] ?? 'Unknown error'));
+        }
+
+        // Ensure the uploaded file is readable by the web server
+        @chmod($filePath, 0644);
 
         // 5. Return public URL
         // Assuming API is at /api, so uploads is at root /uploads
