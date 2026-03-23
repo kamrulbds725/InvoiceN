@@ -1,5 +1,16 @@
 <?php
 // Support Environment Variables (Docker/Dokploy) or config.php
+if (file_exists('.env')) {
+    $lines = file('.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $_ENV[trim($name)] = trim($value);
+        $_SERVER[trim($name)] = trim($value);
+        putenv(trim($name) . '=' . trim($value));
+    }
+}
+
 $dbHost = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? null);
 $isConfigured = file_exists('config.php') || $dbHost;
 
