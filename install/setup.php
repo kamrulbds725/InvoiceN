@@ -60,15 +60,15 @@ if (!$input) {
     sendError('Invalid input');
 }
 
-$host = $input['host'] ?? 'localhost';
-$name = $input['name'] ?? '';
-$user = $input['user'] ?? '';
-$pass = $input['pass'] ?? '';
+$host = $input['host'] ?? getAppEnv('DB_HOST', 'localhost');
+$name = $input['name'] ?? getAppEnv('DB_NAME', '');
+$user = $input['user'] ?? getAppEnv('DB_USER', '');
+$pass = $input['pass'] ?? getAppEnv('DB_PASS', '');
 $adminUser = $input['admin_user'] ?? '';
 $adminPass = $input['admin_pass'] ?? '';
 
 if (empty($name) || empty($user) || empty($adminUser) || empty($adminPass)) {
-    sendError('All fields required');
+    sendError('All fields required. DB Name: ' . ($name ? 'OK' : 'Missing') . ', DB User: ' . ($user ? 'OK' : 'Missing'));
 }
 
 // 1. Test Connection
