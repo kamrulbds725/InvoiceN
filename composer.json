@@ -3,7 +3,7 @@
     "description": "Simple Invoice Generator for Business Owners",
     "type": "project",
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.2",
         "ext-pdo_mysql": "*",
         "ext-gd": "*",
         "ext-mbstring": "*",
