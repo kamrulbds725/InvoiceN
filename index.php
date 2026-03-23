@@ -49,6 +49,30 @@ if (!$isConfigured) {
     header('Location: install/index.php');
     exit;
 }
+
+// Even if configured, check if tables are initialized (at least one user exists)
+// We do this by trying to connect and check the users table
+try {
+    require_once __DIR__ . '/api/db.php';
+    $database = new Database();
+    $db = $database->connect();
+    
+    if ($db) {
+        $stmt = $db->query("SELECT id FROM users LIMIT 1");
+        if (!$stmt) {
+            header('Location: install/index.php');
+            exit;
+        }
+    } else {
+        // Connection failed, let the installer handle it/show the error
+        header('Location: install/index.php');
+        exit;
+    }
+} catch (Exception $e) {
+    // Tables don't exist yet, redirect to installer
+    header('Location: install/index.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
